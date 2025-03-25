@@ -5,22 +5,29 @@
   become: true
 
   tasks:
-    - name: Add Docker GPG key
-      shell: |
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    # - name: Add Docker GPG key
+    #   shell: |
+    #     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-    - name: Add Docker repository
-      shell: |
-        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    # - name: Add Docker repository
+    #   shell: |
+    #     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-    - name: Install Docker CE
+    # - name: Install Docker CE
+    #   apt:
+    #     name:
+    #       - docker-ce
+    #       - docker-ce-cli
+    #       - containerd.io
+    #     state: present
+    #     update_cache: no 
+
+    - name: Install Docker
       apt:
-        name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
+        name: docker.io
         state: present
-        update_cache: no 
+      tags:
+        - docker
         
     - name: Ensure Docker service is running
       systemd:
