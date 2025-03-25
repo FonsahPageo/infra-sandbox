@@ -5,71 +5,21 @@
   become: true
 
   tasks:
-    # - name: Break APT lock if exists
-    #   become: true
-    #   shell: |
-    #     sudo lsof /var/lib/apt/lists/lock || (
-    #       sudo rm -f /var/lib/apt/lists/lock
-    #       sudo rm -f /var/lib/dpkg/lock
-    #     )
-    #   args:
-    #     warn: false
-    #   register: lock_break
-    #   changed_when: "'deleted' in lock_break.stdout"
-    #   tags: apt
-
-    # - name: Ensure APT is available
-    #   block:
-    #   - name: Break stale APT locks
-    #     become: true
-    #     shell: |
-    #       for lock in /var/lib/apt/lists/lock /var/lib/dpkg/lock; do
-    #         sudo lsof $lock || sudo rm -f $lock
-    #       done
-    #     args:
-    #       warn: false
-    #     register: lock_cleanup
-    #     changed_when: "'deleted' in lock_cleanup.stdout"
-
-      # - name: Update apt cache (with force-retry)
-      #   apt:
-      #     update_cache: yes
-      #     force_apt_get: yes
-      #   register: apt_update
-      #   retries: 5
-      #   delay: 15
-      #   until: apt_update is succeeded
-      #   ignore_errors: "{{ ansible_check_mode }}"
-
-    # - name: Check if deadsnakes PPA exists
-    #   command: apt-cache policy | grep -q deadsnakes/ppa
-    #   register: deadsnakes_ppa_check
-    #   ignore_errors: true
-    #   changed_when: false
-
-    # - name: Add deadsnakes PPA
-    #   apt_repository:
-    #     repo: "ppa:deadsnakes/ppa"
-    #     state: present
-    #     update_cache: yes
-    #     force: yes
-      # when: deadsnakes_ppa_check.rc != 0
-
-    # - name: Install Python 3.13.2
-    #   package:
-    #     name: python3.13
-    #     state: present
+    - name: Install required packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - software-properties-common
+        state: present
     
     - name: Add Docker GPG key
-      apt_key:
-        url: "https://download.docker.com/linux/ubuntu/gpg"
-        state: present
+      shell: |
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
     - name: Add Docker repository
-      apt_repository:
-        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
-        state: present
-        filename: "docker-ce"
+      shell: |
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
     - name: Install Docker CE
       apt:
@@ -79,17 +29,20 @@
           - containerd.io
         state: present
         update_cache: no 
+        
+    - name: Ensure Docker service is running
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
 
     - name: Add Kubernetes GPG key
-      apt_key:
-        url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
-        state: present
+      shell: |
+        curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg
 
     - name: Add Kubernetes repository
-      apt_repository:
-        repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
-        state: present
-        filename: "kubernetes"
+      shell: |
+        echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list > /dev/null
 
     - name: Install kubectl
       apt:
@@ -110,23 +63,27 @@
         remote_src: yes
         mode: "0755"
 
-    - name: Install Docker Compose Plugin
-      apt:
-        name: docker-compose-plugin
-        state: present
+    - name: Install Docker Compose
+      shell: |
+        curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        chmod +x /usr/local/bin/docker-compose
 
     - name: Install OpenJDK 21 (LTS)
       apt:
         name: openjdk-21-jdk
         state: present
 
-  # handlers:
-  #   - name: Extract Kustomize
-  #     unarchive:
-  #       src: "/tmp/kustomize.tar.gz"
-  #       dest: "/usr/local/bin/"
-  #       remote_src: yes
-  #       mode: "0755"
+    - name: Install Python and pip
+      apt:
+        name:
+          - python3
+          - python3-pip
+        state: present
 
-  #   - name: Verify apt availability
-  #     meta: clear_host_errors
+    - name: Verify installations
+      shell: "docker --version && kubectl version --client && kustomize version && docker-compose --version && java --version && python3 --version"
+      register: verification_output
+
+    - name: Display verification output
+      debug:
+        msg: "{{ verification_output.stdout_lines }}"
