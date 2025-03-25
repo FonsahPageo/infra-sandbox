@@ -80,12 +80,19 @@
     #   retries: 3
     #   delay: 10
 
-    - name: Download kubectl
-      get_url:
-        url: "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl"
-        dest: /usr/local/bin/kubectl
-        mode: '0755'
-        checksum: "sha256:5e5aa25fad1b9675b4d0dec8e3f1a7db7c1e1a0d629e1a9a5b8e9f9c8b1e8f2"
+    # - name: Download kubectl
+    #   get_url:
+    #     url: "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl"
+    #     dest: /usr/local/bin/kubectl
+    #     mode: '0755'
+    #     checksum: "sha256:5e5aa25fad1b9675b4d0dec8e3f1a7db7c1e1a0d629e1a9a5b8e9f9c8b1e8f2"
+
+    - name: Alternative kubectl download via curl
+      shell: |
+        curl -L --retry 3 --output /usr/local/bin/kubectl https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl
+        chmod +x /usr/local/bin/kubectl
+      args:
+        creates: /usr/local/bin/kubectl
 
     - name: Download Kustomize
       get_url:
