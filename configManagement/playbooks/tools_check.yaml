@@ -7,40 +7,39 @@
     - name: Check Python 3.13 Installation
       command: python3 --version
       register: python_check
-      ignore_errors: true
+      # ignore_errors: true
 
     - name: Check Docker Installation
       command: docker --version
       register: docker_check
-      ignore_errors: true
+      # ignore_errors: true
 
     - name: Check Docker Compose Installation
       command: docker-compose --version
       register: docker_compose_check
-      ignore_errors: true
+      # ignore_errors: true
 
     - name: Check Kubernetes Installation
       command: kubectl --version
       register: kubernetes_check
-      ignore_errors: true
+      # ignore_errors: true
 
     - name: Check Kustomize Installation
       command: kustomize --version
       register: kustomize_check
-      ignore_errors: true
+      # ignore_errors: true
 
     - name: Check Java Presence
       command: java --version
       register: java_check
-      ignore_errors: true
-
+      # ignore_errors: true
 
     - name: Display Check Results
       debug:
         msg: |
-          Python: {{ python_check.stdout + python_check.stderr | default("NOT INSTALLED") }}
-          Docker: {{ (docker_check.stdout + docker_check.stderr) | default("NOT INSTALLED") | trim }}
-          Docker Compose: {{ (docker_compose_check.stdout + docker_compose_check.stderr) | default("NOT INSTALLED") | trim }}
-          Kubernetes: {{ (kubernetes_check.stdout + kubernetes_check.stderr) | default("NOT INSTALLED") | trim }}
-          Kustomize: {{ (kustomize_check.stdout + kustomize_check.stderr) | default("NOT INSTALLED") | trim }}
-          Java: {{ (java_check.stdout + java_check.stderr) | default("NOT INSTALLED") | trim }}
+          Python: {{ python_check.stdout + python_check.stderr else "NOT INSTALLED" }}
+          Docker: {{ (docker_check.stdout + docker_check.stderr) else "NOT INSTALLED" }}
+          Docker Compose: {{ (docker_compose_check.stdout + docker_compose_check.stderr) else "NOT INSTALLED" }}
+          Kubernetes: {{ (kubernetes_check.stdout + kubernetes_check.stderr) else "NOT INSTALLED" }}
+          Kustomize: {{ (kustomize_check.stdout + kustomize_check.stderr) else "NOT INSTALLED" }}
+          Java: {{ (java_check.stdout + java_check.stderr) else "NOT INSTALLED" }}
