@@ -10,7 +10,7 @@
       ignore_errors: true
 
     - name: Check Docker Installation
-      oommand: docker --version
+      command: docker --version
       register: docker_check
       ignore_errors: true
 
