@@ -6,6 +6,7 @@
 
   tasks:
     - name: Install required packages
+      become: true
       apt:
         name:
           - apt-transport-https
