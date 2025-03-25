@@ -5,13 +5,28 @@
   become: true
 
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-      register: apt_update
-      retries: 5
-      delay: 10
-      ignore_errors: true
+    - name: Ensure APT is available
+      block:
+      - name: Break stale APT locks
+        become: true
+        shell: |
+          for lock in /var/lib/apt/lists/lock /var/lib/dpkg/lock; do
+            sudo lsof $lock || sudo rm -f $lock
+          done
+        args:
+          warn: false
+        register: lock_cleanup
+        changed_when: "'deleted' in lock_cleanup.stdout"
+
+      - name: Update apt cache (with force-retry)
+        apt:
+          update_cache: yes
+          force_apt_get: yes
+        register: apt_update
+        retries: 5
+        delay: 15
+        until: apt_update is succeeded
+        ignore_errors: "{{ ansible_check_mode }}"
 
     - name: Check if deadsnakes PPA exists
       shell: apt-cache policy | grep -q deadsnakes/ppa
