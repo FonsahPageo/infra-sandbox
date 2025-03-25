@@ -44,50 +44,7 @@
         state: present
         update_cache: no 
 
-    # - name: Create keyring directory
-    #   file:
-    #     path: /usr/share/keyrings
-    #     state: directory
-    #     mode: '0755'
-  
-    # - name: Add Kubernetes GPG key
-    #   shell: |
-    #     curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg
-    #     chmod 644 /usr/share/keyrings/kubernetes-archive-keyring.gpg
-    #   args:
-    #     creates: /usr/share/keyrings/kubernetes-archive-keyring.gpg
-
-    # - name: Add Kubernetes repository
-    #   apt_repository:
-    #     repo: "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-{{ 'xenial' if ansible_distribution_release in ['bionic','focal','jammy'] else 'noble' }} main"
-    #     state: present
-    #     filename: kubernetes
-    #     update_cache: yes
-
-    # - name: Add Kubernetes repository
-    #   apt_repository:
-    #     repo: "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-jammy main"
-    #     state: present
-    #     filename: kubernetes
-    #     update_cache: yes
-
-    # - name: Install kubectl
-    #   apt:
-    #     name: "kubectl={{ kubectl_version | default('1.30.0-00') }}"
-    #     state: present
-    #     update_cache: yes
-    #   register: kubectl_install
-    #   retries: 3
-    #   delay: 10
-
-    # - name: Download kubectl
-    #   get_url:
-    #     url: "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl"
-    #     dest: /usr/local/bin/kubectl
-    #     mode: '0755'
-    #     checksum: "sha256:5e5aa25fad1b9675b4d0dec8e3f1a7db7c1e1a0d629e1a9a5b8e9f9c8b1e8f2"
-
-    - name: Alternative kubectl download via curl
+    - name: Kubectl Download
       shell: |
         curl -L --retry 3 --output /usr/local/bin/kubectl https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl
         chmod +x /usr/local/bin/kubectl
@@ -95,17 +52,17 @@
         creates: /usr/local/bin/kubectl
 
     - name: Download Kustomize
-      get_url:
-        url: "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.3.0/kustomize_v5.3.0_linux_amd64.tar.gz"
-        dest: "/tmp/kustomize.tar.gz"
-        mode: "0755"
+      shell: |
+        curl -L --retry 3 --output /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.3.0/kustomize_v5.3.0_linux_amd64.tar.gz
+      args:
+        creates: /tmp/kustomize.tar.gz
 
-    - name: Extract and install Kustomize
+    - name: Install Kustomize
       unarchive:
-        src: "/tmp/kustomize.tar.gz"
-        dest: "/usr/local/bin/"
+        src: /tmp/kustomize.tar.gz
+        dest: /usr/local/bin
         remote_src: yes
-        mode: "0755"
+        mode: '0755'
 
     - name: Install Docker Compose
       shell: |
