@@ -4,7 +4,7 @@
   gather_facts: false
 
   tasks:
-    - name: Check Python 3.13.2 Installation
+    - name: Check Python 3.13 Installation
       command: python3 --version
       register: python_check
       ignore_errors: true
@@ -39,8 +39,8 @@
       debug:
         msg: |
           Python 3.13.2: {{ "INSTALLED" if python_check.rc == 0 else "NOT INSTALLED" }}
-          Kustomize: {{ "INSTALLED" if kustomize_check.stat.exists else "NOT INSTALLED" }}
-          Docker: {{ "INSTALLED" if docker_check.stat.exists else "NOT INSTALLED" }}
-          Kubernetes: {{ "INSTALLED" if kubectl_check.stat.exists else "NOT INSTALLED" }}
-          Docker Compose: {{ "INSTALLED" if docker_compose_check.stat.exists else "NOT INSTALLED" }}
-          Java: {{ "INSTALLED" if java_check.stat.exists else "NOT INSTALLED" }}
+          Kustomize: {{ "INSTALLED" if kustomize_check.rc else "NOT INSTALLED" }}
+          Docker: {{ "INSTALLED" if docker_check.rc else "NOT INSTALLED" }}
+          Kubernetes: {{ "INSTALLED" if kubectl_check.rc else "NOT INSTALLED" }}
+          Docker Compose: {{ "INSTALLED" if docker_compose_check.rc else "NOT INSTALLED" }}
+          Java: {{ "INSTALLED" if java_check.rc else "NOT INSTALLED" }}
