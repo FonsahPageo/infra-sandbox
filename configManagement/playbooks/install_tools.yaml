@@ -5,6 +5,19 @@
   become: true
 
   tasks:
+    - name: Break APT lock if exists
+      become: true
+      shell: |
+        sudo lsof /var/lib/apt/lists/lock || (
+          sudo rm -f /var/lib/apt/lists/lock
+          sudo rm -f /var/lib/dpkg/lock
+        )
+      args:
+        warn: false
+      register: lock_break
+      changed_when: "'deleted' in lock_break.stdout"
+      tags: apt
+
     - name: Ensure APT is available
       block:
       - name: Break stale APT locks
