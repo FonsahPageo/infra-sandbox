@@ -5,12 +5,18 @@
   become: true
 
   tasks:
-    - name: Add Docker GPG key 
-      shell: |
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-      args:
-        creates: /usr/share/keyrings/docker-archive-keyring.gpg
+    # - name: Add Docker GPG key 
+    #   shell: |
+    #     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    #   args:
+    #     creates: /usr/share/keyrings/docker-archive-keyring.gpg
       # when: add_key is failed
+
+    - name: Add Docker GPG key
+      get_url:
+        url: "https://download.docker.com/linux/ubuntu/gpg"
+        dest: "/usr/share/keyrings/docker-archive-keyring.gpg"
+        mode: "0644"
 
     # - name: Add Docker repository
     #   apt_repository:
@@ -19,11 +25,21 @@
     #     filename: docker-ce
     #     update_cache: yes
 
-    - name: Add Docker repository 
+    # - name: Add Docker repository 
+    #   apt_repository:
+    #     repo: "deb [arch={{ ansible_architecture | lower }} signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu jammy stable"
+    #     state: present
+    #     filename: docker-ce
+    #     update_cache: yes
+
+    - name: Add Docker repository
       apt_repository:
-        repo: "deb [arch={{ ansible_architecture | lower }} signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu jammy stable"
+        repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
         state: present
-        filename: docker-ce
+        filename: docker
+
+    - name: Update apt package index
+      apt:
         update_cache: yes
 
     - name: Install Docker CE
