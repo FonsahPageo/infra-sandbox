@@ -125,3 +125,6 @@
         dest: "/usr/local/bin/"
         remote_src: yes
         mode: "0755"
+
+    - name: Verify apt availability
+      meta: clear_host_errors
