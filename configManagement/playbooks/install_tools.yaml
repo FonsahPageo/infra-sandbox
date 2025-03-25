@@ -8,6 +8,7 @@
     - name: Update apt cache
       apt:
         update_cache: yes
+      register: apt_update
 
     - name: Add deadsnakes PPA for Python 3.13
       apt_repository:
