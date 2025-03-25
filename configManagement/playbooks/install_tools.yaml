@@ -9,16 +9,21 @@
       apt:
         update_cache: yes
       register: apt_update
-      retries: 3
+      retries: 5
       delay: 10
-      until: apt_update is succeeded
-      ignore_errors: true 
+      ignore_errors: true
+
+    - name: Check if deadsnakes PPA exists
+      shell: apt-cache policy | grep -q deadsnakes/ppa
+      register: deadsnakes_ppa_check
+      ignore_errors: true
+      changed_when: false
 
     - name: Add deadsnakes PPA
       apt_repository:
         repo: "ppa:deadsnakes/ppa"
         state: present
-      when: "'deadsnakes' not in ansible_facts.packages"
+      when: deadsnakes_ppa_check.rc != 0
 
     - name: Install Python 3.13.2
       package:
@@ -84,7 +89,7 @@
       apt:
         name: openjdk-21-jdk
         state: present
-        
+
   handlers:
     - name: Extract Kustomize
       unarchive:
