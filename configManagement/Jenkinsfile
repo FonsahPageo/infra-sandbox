@@ -61,7 +61,7 @@ pipeline {
                 script {
                     sh '''
                     ansible-playbook -i /var/jenkins_home/ansible/inventory/hosts.ini \
-                    /var/jenkins_home/ansible/playbooks/tools_check.yaml --diff \
+                    /var/jenkins_home/ansible/playbooks/tools_check.yaml --check --diff \
                     --private-key ${PRIVATE_KEY_PATH}
                     '''
                 }
