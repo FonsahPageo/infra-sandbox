@@ -38,9 +38,9 @@
     - name: Display Check Results
       debug:
         msg: |
-          Python 3.13.2: {{ "INSTALLED" if python_check.rc == 0 else "NOT INSTALLED" }}
-          Kustomize: {{ "INSTALLED" if kustomize_check.rc else "NOT INSTALLED" }}
-          Docker: {{ "INSTALLED" if docker_check.rc else "NOT INSTALLED" }}
-          Kubernetes: {{ "INSTALLED" if kubernetes_check.rc else "NOT INSTALLED" }}
-          Docker Compose: {{ "INSTALLED" if docker_compose_check.rc else "NOT INSTALLED" }}
-          Java: {{ "INSTALLED" if java_check.rc else "NOT INSTALLED" }}
+          Python 3.13: {{ python_check.stdout | default("NOT INSTALLED") }}
+          Docker: {{ docker_check.stdout | default("NOT INSTALLED") }}
+          Docker Compose: {{ docker_compose_check.stdout | default("NOT INSTALLED") }}
+          Kubernetes: {{ kubernetes_check.stdout | default("NOT INSTALLED") }}
+          Kustomize: {{ kustomize_check.stdout | default("NOT INSTALLED") }}
+          Java: {{ java_check.stdout | default("NOT INSTALLED") }}
