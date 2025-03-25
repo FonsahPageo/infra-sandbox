@@ -37,9 +37,9 @@
     - name: Display Check Results
       debug:
         msg: |
-          Python: {{ python_check.stdout + python_check.stderr | default("NOT INSTALLED") | replace('\n', '') }}\n
-          Docker: {{ docker_check.stdout + docker_check.stderr | default("NOT INSTALLED") | replace('\n', '') }}\n
-          Docker Compose: {{ docker_compose_check.stdout + docker_compose_check.stderr | default("NOT INSTALLED") | replace('\n', '') }}\n
-          Kubernetes: {{ kubernetes_check.stdout + kubernetes_check.stderr | default("NOT INSTALLED") | replace('\n', '') }}\n
-          Kustomize: {{ kustomize_check.stdout + kustomize_check.stderr | default("NOT INSTALLED") | replace('\n', '') }}\n
-          Java: {{ java_check.stdout + java_check.stderr | default("NOT INSTALLED") | replace('\n', '') }}\n
+          Python: {{ python_check.stdout + python_check.stderr | default("NOT INSTALLED") | replace('\n', '') }}
+          Docker: {{ docker_check.stdout + docker_check.stderr | default("NOT INSTALLED") | replace('\n', '') }}
+          Docker Compose: {{ docker_compose_check.stdout + docker_compose_check.stderr | default("NOT INSTALLED") | replace('\n', '') }}
+          Kubernetes: {{ kubernetes_check.stdout + kubernetes_check.stderr | default("NOT INSTALLED") | replace('\n', '') }}
+          Kustomize: {{ kustomize_check.stdout + kustomize_check.stderr | default("NOT INSTALLED") | replace('\n', '') }}
+          Java: {{ java_check.stdout + java_check.stderr | default("NOT INSTALLED") | replace('\n', '') }}
