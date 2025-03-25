@@ -10,38 +10,27 @@
       ignore_errors: true
 
     - name: Check Docker Installation
-      stat:
-        path: /usr/bin/docker
+      oommand: docker --version
       register: docker_check
       ignore_errors: true
 
     - name: Check Docker Compose Installation
-      stat:
-        path: /usr/local/bin/docker-compose
+      command: docker-compose --version
       register: docker_compose_check
       ignore_errors: true
 
     - name: Check Kubernetes Installation
-      stat:
-        path: /usr/bin/kubectl
+      command: kubectl --version
       register: kubernetes_check
       ignore_errors: true
 
     - name: Check Kustomize Installation
-      stat:
-        /usr/local/bin/kustomize
+      command: kustomize --version
       register: kustomize_check
       ignore_errors: true
 
-    - name: Check Docker Compose Presence
-      stat:
-        path: /usr/local/bin/docker-compose
-      register: docker_compose_check
-      ignore_errors: true
-
     - name: Check Java Presence
-      stat:
-        path: /usr/bin/java
+      command: java --version
       register: java_check
       ignore_errors: true
 
