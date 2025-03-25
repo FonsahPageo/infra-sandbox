@@ -42,7 +42,7 @@
       #   ignore_errors: "{{ ansible_check_mode }}"
 
     - name: Check if deadsnakes PPA exists
-      shell: apt-cache policy | grep -q deadsnakes/ppa
+      command: apt-cache policy | grep -q deadsnakes/ppa
       register: deadsnakes_ppa_check
       ignore_errors: true
       changed_when: false
@@ -51,7 +51,9 @@
       apt_repository:
         repo: "ppa:deadsnakes/ppa"
         state: present
-      when: deadsnakes_ppa_check.rc != 0
+        update_cache: yes
+        force: yes
+      # when: deadsnakes_ppa_check.rc != 0
 
     - name: Install Python 3.13.2
       package:
