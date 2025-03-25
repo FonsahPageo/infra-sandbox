@@ -20,12 +20,6 @@
         state: latest
         executable: /usr/bin/pip3
 
-    # - name: Add Docker GPG key
-    #   get_url:
-    #     url: "https://download.docker.com/linux/ubuntu/gpg"
-    #     dest: "/usr/share/keyrings/docker-archive-keyring.gpg"
-    #     mode: "0644"
-
     - name: Add Docker GPG key
       shell: |
         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
@@ -42,12 +36,11 @@
       apt:
         update_cache: yes
 
-    - name: Install Docker CE
+    - name: Install Docker
       apt:
         name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
+          - docker.io
+          - containerd
         state: present
         update_cache: no 
 
