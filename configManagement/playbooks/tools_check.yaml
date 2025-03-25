@@ -38,9 +38,9 @@
     - name: Display Check Results
       debug:
         msg: |
-          Python 3.13: {{ python_check.stdout | default("NOT INSTALLED") }}
-          Docker: {{ docker_check.stdout | default("NOT INSTALLED") }}
-          Docker Compose: {{ docker_compose_check.stdout | default("NOT INSTALLED") }}
-          Kubernetes: {{ kubernetes_check.stdout | default("NOT INSTALLED") }}
-          Kustomize: {{ kustomize_check.stdout | default("NOT INSTALLED") }}
-          Java: {{ java_check.stdout | default("NOT INSTALLED") }}
+          Python: {{ python_check.stdout + python_check.stderr | default("NOT INSTALLED") }}
+          Docker: {{ (docker_check.stdout + docker_check.stderr) | default("NOT INSTALLED") | trim }}
+          Docker Compose: {{ (docker_compose_check.stdout + docker_compose_check.stderr) | default("NOT INSTALLED") | trim }}
+          Kubernetes: {{ (kubernetes_check.stdout + kubernetes_check.stderr) | default("NOT INSTALLED") | trim }}
+          Kustomize: {{ (kustomize_check.stdout + kustomize_check.stderr) | default("NOT INSTALLED") | trim }}
+          Java: {{ (java_check.stdout + java_check.stderr) | default("NOT INSTALLED") | trim }}
