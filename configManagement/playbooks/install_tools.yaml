@@ -43,26 +43,32 @@
           - containerd
         state: present
         update_cache: no 
-        
-    # - name: Ensure Docker service is running
-    #   systemd:
-    #     name: docker
-    #     state: started
-    #     enabled: yes
 
+    - name: Create keyring directory
+      file:
+        path: /usr/share/keyrings
+        state: directory
+        mode: '0755'
+  
     - name: Add Kubernetes GPG key
       shell: |
         curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg
 
     - name: Add Kubernetes repository
-      shell: |
-        echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list > /dev/null
+      apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-{{ 'xenial' if ansible_distribution_release in ['bionic','focal','jammy'] else 'noble' }} main"
+        state: present
+        filename: kubernetes
+        update_cache: yes
 
     - name: Install kubectl
       apt:
-        name: kubectl
+        name: "kubectl={{ kubectl_version | default('1.30.0-00') }}"
         state: present
         update_cache: yes
+      register: kubectl_install
+      retries: 3
+      delay: 10
 
     - name: Download Kustomize
       get_url:
