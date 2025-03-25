@@ -7,32 +7,32 @@
     - name: Check Python 3.13 Installation
       command: python3 --version
       register: python_check
-      # ignore_errors: true
+      ignore_errors: true
 
     - name: Check Docker Installation
       command: docker --version
       register: docker_check
-      # ignore_errors: true
+      ignore_errors: true
 
     - name: Check Docker Compose Installation
       command: docker-compose --version
       register: docker_compose_check
-      # ignore_errors: true
+      ignore_errors: true
 
     - name: Check Kubernetes Installation
       command: kubectl --version
       register: kubernetes_check
-      # ignore_errors: true
+      ignore_errors: true
 
     - name: Check Kustomize Installation
       command: kustomize --version
       register: kustomize_check
-      # ignore_errors: true
+      ignore_errors: true
 
     - name: Check Java Presence
       command: java --version
       register: java_check
-      # ignore_errors: true
+      ignore_errors: true
 
     - name: Display Check Results
       debug:
