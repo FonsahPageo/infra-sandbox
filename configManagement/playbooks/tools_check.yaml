@@ -1,0 +1,57 @@
+---
+- name: Check Software Installation Playbook
+  hosts: test
+  gather_facts: false
+
+  tasks:
+    - name: Check Python 3.13.2 Installation
+      command: python3 --version
+      register: python_check
+      ignore_errors: true
+
+    - name: Check Docker Installation
+      stat:
+        path: /usr/bin/docker
+      register: docker_check
+      ignore_errors: true
+
+    - name: Check Docker Compose Installation
+      stat:
+        path: /usr/local/bin/docker-compose
+      register: docker_compose_check
+      ignore_errors: true
+
+    - name: Check Kubernetes Installation
+      stat:
+        path: /usr/bin/kubectl
+      register: kubernetes_check
+      ignore_errors: true
+
+    - name: Check Kustomize Installation
+      stat:
+        /usr/local/bin/kustomize
+      register: kustomize_check
+      ignore_errors: true
+
+    - name: Check Docker Compose Presence
+      stat:
+        path: /usr/local/bin/docker-compose
+      register: docker_compose_check
+      ignore_errors: true
+
+    - name: Check Java Presence
+      stat:
+        path: /usr/bin/java
+      register: java_check
+      ignore_errors: true
+
+
+    - name: Display Check Results
+      debug:
+        msg: |
+          Python 3.13.2: {{ "INSTALLED" if python_check.rc == 0 else "NOT INSTALLED" }}
+          Kustomize: {{ "INSTALLED" if kustomize_check.stat.exists else "NOT INSTALLED" }}
+          Docker: {{ "INSTALLED" if docker_check.stat.exists else "NOT INSTALLED" }}
+          Kubernetes: {{ "INSTALLED" if kubectl_check.stat.exists else "NOT INSTALLED" }}
+          Docker Compose: {{ "INSTALLED" if docker_compose_check.stat.exists else "NOT INSTALLED" }}
+          Java: {{ "INSTALLED" if java_check.stat.exists else "NOT INSTALLED" }}

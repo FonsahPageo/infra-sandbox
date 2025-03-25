@@ -1,0 +1,77 @@
+---
+- name: Software Installation Playbook
+  hosts: test
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Add deadsnakes PPA for Python 3.13
+      apt_repository:
+        repo: "ppa:deadsnakes/ppa"
+        state: present
+
+    - name: Install Python 3.13.2
+      package:
+        name: python3.13
+        state: present
+    
+    - name: Add Docker GPG key
+      apt_key:
+        url: "https://download.docker.com/linux/ubuntu/gpg"
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+        filename: "docker-ce"
+
+    - name: Install Docker CE
+      apt:
+        name: docker-ce
+        state: present
+        update_cache: yes
+
+    - name: Add Kubernetes GPG key
+      apt_key:
+        url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+        state: present
+
+    - name: Add Kubernetes repository
+      apt_repository:
+        repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+        state: present
+        filename: "kubernetes"
+
+    - name: Install kubectl
+      apt:
+        name: kubectl
+        state: present
+        update_cache: yes
+
+    - name: Download Kustomize
+      get_url:
+        url: "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.3.0/kustomize_v5.3.0_linux_amd64.tar.gz"
+        dest: "/tmp/kustomize.tar.gz"
+        mode: "0755"
+
+    - name: Extract and install Kustomize
+      unarchive:
+        src: "/tmp/kustomize.tar.gz"
+        dest: "/usr/local/bin/"
+        remote_src: yes
+        mode: "0755"
+
+    - name: Install Docker Compose Plugin
+      apt:
+        name: docker-compose-plugin
+        state: present
+
+    - name: Install OpenJDK 21 (LTS)
+      apt:
+        name: openjdk-21-jdk
+        state: present
