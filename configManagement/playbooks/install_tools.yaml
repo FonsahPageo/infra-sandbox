@@ -10,7 +10,7 @@
         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
       args:
         creates: /usr/share/keyrings/docker-archive-keyring.gpg
-      when: add_key is failed
+      # when: add_key is failed
 
     # - name: Add Docker repository
     #   apt_repository:
