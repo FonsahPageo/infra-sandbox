@@ -15,26 +15,14 @@
         owner: root
         group: root
 
-    - name: Ensure Docker GPG key
-      block:
-      - name: Add key with builtin timeout
-        ansible.builtin.shell: |
-          curl -fsSL --max-time 5 https://download.docker.com/linux/ubuntu/gpg | \
-          sudo gpg --batch --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-        args:
-          creates: /usr/share/keyrings/docker-archive-keyring.gpg
-        timeout: 10
-        ignore_errors: true
-        register: modern_method
-
-      - name: Add key with manual timeout
-        shell: |
+    - name: Add docker GPG key
+      shell: |
           timeout 10s bash -c '\
-            curl -fsSL --max-time 5 https://download.docker.com/linux/ubuntu/gpg | \
-            gpg --batch --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg'
-        args:
-          creates: /usr/share/keyrings/docker-archive-keyring.gpg
-        when: modern_method is failed
+          curl -fsSL --max-time 5 https://download.docker.com/linux/ubuntu/gpg | \
+          gpg --batch --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg'
+      args:
+        creates: /usr/share/keyrings/docker-archive-keyring.gpg
+      when: modern_method is failed  
 
     - name: Add Docker repository
       become: true
