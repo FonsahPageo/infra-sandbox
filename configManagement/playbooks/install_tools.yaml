@@ -13,7 +13,6 @@
           - python3-venv
         state: present
         update_cache: yes
-        register: python_install
 
     - name: Ensure required Python packages are installed
       pip:
