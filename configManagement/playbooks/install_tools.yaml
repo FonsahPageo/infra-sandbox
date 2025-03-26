@@ -22,7 +22,6 @@
           gpg --batch --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg'
       args:
         creates: /usr/share/keyrings/docker-archive-keyring.gpg
-      when: modern_method is failed  
 
     - name: Add Docker repository
       become: true
