@@ -21,6 +21,7 @@
           - python3
           - python3-pip
         state: present
+        become: true
 
     - name: Download Docker installation script
       shell: "curl -fsSL https://get.docker.com -o /tmp/get-docker.sh"
