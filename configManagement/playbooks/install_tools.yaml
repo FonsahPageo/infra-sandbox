@@ -5,22 +5,11 @@
   become: true
 
   tasks:
-    - name: Download and install Python
-      shell: |
-        apt-get update || true
-        apt-get install -y python3 python3-pip python3-venv || \
-        (wget http://archive.ubuntu.com/ubuntu/pool/main/p/python3-defaults/python3_3.10.6-3~22.04_amd64.deb && \
-         dpkg -i python3_3.10.6-3~22.04_amd64.deb)
-      args:
-        executable: /bin/bash
+    - name: Update package cache
+      raw: apt update
 
-    - name: Ensure required Python packages are installed
-      pip:
-        name:
-          - requests
-          - urllib3
-        state: latest
-        executable: /usr/bin/pip3
+    - name: Install Python
+      raw: apt install -y python3
 
     - name: Add Docker GPG key
       shell: |
