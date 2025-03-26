@@ -5,23 +5,23 @@
   become: true
 
   tasks:
-    - name: Check for existing apt processes
-      shell: |
-        if pgrep -x "apt|apt-get"; then
-          sudo pkill -9 "apt|apt-get"
-          sudo rm -f /var/lib/apt/lists/lock
-        fi
-      args:
-        executable: /bin/bash
-      ignore_errors: true
-      changed_when: false
+    # - name: Check for existing apt processes
+    #   shell: |
+    #     if pgrep -x "apt|apt-get"; then
+    #       sudo pkill -9 "apt|apt-get"
+    #       sudo rm -f /var/lib/apt/lists/lock
+    #     fi
+    #   args:
+    #     executable: /bin/bash
+    #   ignore_errors: true
+    #   changed_when: false
 
-    - name: Update package cache
-      shell: |
-        sudo apt-get clean
-      args:
-        executable: /bin/bash
-        # timeout: 30
+    # - name: Update package cache
+    #   shell: |
+    #     sudo apt-get clean
+    #   args:
+    #     executable: /bin/bash
+    #     # timeout: 30
 
     - name: Install Python via dpkg
       shell: |
