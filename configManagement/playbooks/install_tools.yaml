@@ -5,12 +5,12 @@
   become: true
 
   tasks:
-    - name: Ensure passwordless sudo
-      lineinfile:
-        path: /etc/sudoers.d/testing
-        line: 'testing ALL=(ALL) NOPASSWD: ALL'
-        validate: '/usr/sbin/visudo -cf %s'
-        mode: '0440'
+    # - name: Ensure passwordless sudo
+    #   lineinfile:
+    #     path: /etc/sudoers.d/testing
+    #     line: 'testing ALL=(ALL) NOPASSWD: ALL'
+    #     validate: '/usr/sbin/visudo -cf %s'
+    #     mode: '0440'
 
     - name: Update package cache
       shell: |
