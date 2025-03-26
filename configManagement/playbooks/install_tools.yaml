@@ -22,14 +22,14 @@
     #     executable: /bin/bash
     #   ignore_errors: true
 
-    - name: Install Python minimal
-      apt:
-        name: python3-minimal
-        state: present
-        # update_cache: yes
-      register: python_install
-      retries: 3
-      delay: 5
+    # - name: Install Python minimal
+    #   apt:
+    #     name: python3-minimal
+    #     state: present
+    #     # update_cache: yes
+    #   register: python_install
+    #   retries: 3
+    #   delay: 5
 
     - name: Add Docker GPG key
       shell: |
