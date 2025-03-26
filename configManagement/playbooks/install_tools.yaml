@@ -15,8 +15,8 @@
         owner: root
         group: root
 
-    - name: Download Docker installation script
-      shell: "curl -fsSL https://get.docker.com -o /tmp/get-docker.sh"
+    # - name: Download Docker installation script
+    #   shell: "curl -fsSL https://get.docker.com -o /tmp/get-docker.sh"
 
     # - name: Run Docker installation script
     #   shell: "sh /tmp/get-docker.sh"
