@@ -5,18 +5,23 @@
   become: true
 
   tasks:
-    # - name: Ensure passwordless sudo
-    #   lineinfile:
-    #     path: /etc/sudoers.d/testing
-    #     line: 'testing ALL=(ALL) NOPASSWD: ALL'
-    #     validate: '/usr/sbin/visudo -cf %s'
-    #     mode: '0440'
+    - name: Check for existing apt processes
+      shell: |
+        if pgrep -x "apt|apt-get"; then
+          sudo pkill -9 "apt|apt-get"
+          sudo rm -f /var/lib/apt/lists/lock
+        fi
+      args:
+        executable: /bin/bash
+      ignore_errors: true
+      changed_when: false
 
     - name: Update package cache
       shell: |
-        sudo apt-get update -qq
+        sudo apt-get update -qq -o Acquire::http::Timeout=20
       args:
         executable: /bin/bash
+        timeout: 30
 
     - name: Install Python via dpkg
       shell: |
