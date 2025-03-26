@@ -5,14 +5,22 @@
   become: true
 
   tasks:
-    - name: Force install Python
-      shell: |
-        cd /tmp
-        (apt-get download python3-minimal || \
-         wget http://archive.ubuntu.com/ubuntu/pool/main/p/python3-defaults/python3-minimal_3.10.6-1_$(lsb_release -sc)_amd64.deb) && \
-        dpkg -i python3-minimal*.deb
-      args:
-        executable: /bin/bash
+    - name: Update APT package index
+      apt:
+        update_cache:
+
+    - name: Install Python 3 and Pip
+      apt:
+        name:
+          - python3
+          - python3-pip
+        state: present
+
+    - name: Ensure `pip` is upgraded to the latest version
+      pip:
+        name: pip
+        state: latest
+        executable: /usr/bin/pip3
 
     - name: Add Docker GPG key
       shell: |
