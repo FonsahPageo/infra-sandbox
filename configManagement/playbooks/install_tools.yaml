@@ -7,6 +7,15 @@
   become_user: root
 
   tasks:
+    - name: Fix APT directory permissions
+      file:
+        path: /var/lib/apt/
+        state: directory
+        mode: '0755'
+        owner: root
+        group: root
+        recurse: yes
+
     - name: Ensure keyring directory exists
       file:
         path: /usr/share/keyrings
@@ -23,6 +32,7 @@
           - gnupg
           - software-properties-common
         state: present
+        update_cache: yes
 
     - name: Download Docker installation script
       shell: "curl -fsSL https://get.docker.com -o /tmp/get-docker.sh"
