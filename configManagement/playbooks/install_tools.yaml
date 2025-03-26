@@ -5,36 +5,12 @@
   become: true
 
   tasks:
-    # - name: Check for existing apt processes
-    #   shell: |
-    #     if pgrep -x "apt|apt-get"; then
-    #       sudo pkill -9 "apt|apt-get"
-    #       sudo rm -f /var/lib/apt/lists/lock
-    #     fi
-    #   args:
-    #     executable: /bin/bash
-    #   ignore_errors: true
-    #   changed_when: false
-
-    # - name: Update package cache
-    #   shell: |
-    #     sudo apt-get clean
-    #   args:
-    #     executable: /bin/bash
-    #     # timeout: 30
-
     - name: Install Python via dpkg
       shell: |
         apt-get install -y --no-install-recommends python3-minimal
       args:
         executable: /bin/bash
       ignore_errors: true
-
-    - name: Ensure `pip` is upgraded to the latest version
-      pip:
-        name: pip
-        state: latest
-        executable: /usr/bin/pip3
 
     - name: Add Docker GPG key
       shell: |
