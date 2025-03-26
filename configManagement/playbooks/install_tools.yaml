@@ -16,10 +16,7 @@
         group: root
 
     - name: Download Docker installation script
-      get_url:
-        url: "https://get.docker.com"
-        dest: "/tmp/get-docker.sh"
-        mode: "0755"
+      shell: "curl -fsSL https://get.docker.com -o /tmp/get-docker.sh"
 
     - name: Run Docker installation script
       shell: "sh /tmp/get-docker.sh"
