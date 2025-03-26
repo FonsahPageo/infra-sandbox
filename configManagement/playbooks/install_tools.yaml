@@ -7,40 +7,40 @@
   become_user: root
 
   tasks:
-    # - name: Install Python and pip
-    #   apt:
-    #     name:
-    #       - python3
-    #       - python3-pip
-    #     state: present
-    #     force_apt_get: yes
-
-    - name: Download Docker installation script
-      shell: "curl -fsSL https://get.docker.com -o /tmp/get-docker.sh"
-
-    - name: Run Docker installation script
-      shell: |
-        chmod +x /tmp/get-docker.sh
-        /bin/bash /tmp/get-docker.sh
-      args:
-        executable: /bin/bash
-      register: docker_install_result
-      failed_when: docker_install_result.rc != 0
-
-    - name: Display Docker installation output if failed
-      debug:
-        var: docker_install_result
-      when: docker_install_result.rc != 0
-
-    - name: Add current user to Docker group
-      user:
-        name: "{{ lookup('env', 'USER') }}"
-        groups: docker
-        append: yes
-
-    - name: Update apt package index
+    - name: Install Python and pip
       apt:
-        update_cache: yes
+        name:
+          - python3
+          - python3-pip
+        state: present
+        force_apt_get: yes
+
+    # - name: Download Docker installation script
+    #   shell: "curl -fsSL https://get.docker.com -o /tmp/get-docker.sh"
+
+    # - name: Run Docker installation script
+    #   shell: |
+    #     chmod +x /tmp/get-docker.sh
+    #     /bin/bash /tmp/get-docker.sh
+    #   args:
+    #     executable: /bin/bash
+    #   register: docker_install_result
+    #   failed_when: docker_install_result.rc != 0
+
+    # - name: Display Docker installation output if failed
+    #   debug:
+    #     var: docker_install_result
+    #   when: docker_install_result.rc != 0
+
+    # - name: Add current user to Docker group
+    #   user:
+    #     name: "{{ lookup('env', 'USER') }}"
+    #     groups: docker
+    #     append: yes
+
+    # - name: Update apt package index
+    #   apt:
+    #     update_cache: yes
 
     # - name: Add Docker GPG key
     #   apt_key:
@@ -60,28 +60,28 @@
     #     state: present
     #     update_cache: no 
 
-    - name: Download Kustomize
-      shell: |
-        curl -L --retry 3 --output /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.3.0/kustomize_v5.3.0_linux_amd64.tar.gz
-      args:
-        creates: /tmp/kustomize.tar.gz
+    # - name: Download Kustomize
+    #   shell: |
+    #     curl -L --retry 3 --output /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.3.0/kustomize_v5.3.0_linux_amd64.tar.gz
+    #   args:
+    #     creates: /tmp/kustomize.tar.gz
 
-    - name: Install Kustomize
-      unarchive:
-        src: /tmp/kustomize.tar.gz
-        dest: /usr/local/bin
-        remote_src: yes
-        mode: '0755'
+    # - name: Install Kustomize
+    #   unarchive:
+    #     src: /tmp/kustomize.tar.gz
+    #     dest: /usr/local/bin
+    #     remote_src: yes
+    #     mode: '0755'
 
-    - name: Install Docker Compose
-      shell: |
-        curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        chmod +x /usr/local/bin/docker-compose
+    # - name: Install Docker Compose
+    #   shell: |
+    #     curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    #     chmod +x /usr/local/bin/docker-compose
 
-    - name: Verify installations
-      shell: "docker --version && kubectl version --client && kustomize version && docker-compose --version && java --version && python3 --version"
-      register: verification_output
+    # - name: Verify installations
+    #   shell: "docker --version && kubectl version --client && kustomize version && docker-compose --version && java --version && python3 --version"
+    #   register: verification_output
 
-    - name: Display verification output
-      debug:
-        msg: "{{ verification_output.stdout_lines }}"
+    # - name: Display verification output
+      # debug:
+      #   msg: "{{ verification_output.stdout_lines }}"
