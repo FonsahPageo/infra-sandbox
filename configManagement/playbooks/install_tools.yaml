@@ -31,7 +31,7 @@
         shell: |
           timeout 10s bash -c '\
             curl -fsSL --max-time 5 https://download.docker.com/linux/ubuntu/gpg | \
-            sudo gpg --batch --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg'
+            gpg --batch --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg'
         args:
           creates: /usr/share/keyrings/docker-archive-keyring.gpg
         when: modern_method is failed
