@@ -5,16 +5,15 @@
   become: true
 
   tasks:
-    - name: Clear any existing APT locks
-      shell: |
-        sudo rm -f /var/lib/apt/lists/lock \
-                   /var/lib/dpkg/lock \
-                   /var/lib/dpkg/lock-frontend
-      args:
-        warn: false
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      register: apt_update
+      retries: 5
+      delay: 15
+      until: apt_update is succeeded
       ignore_errors: true
-      register: apt_lock_cleanup
-      changed_when: "'No such file' not in apt_lock_cleanup.stderr"
 
     - name: Install Python and pip
       apt:
@@ -23,6 +22,7 @@
           - python3-pip
           - python3-venv
         state: present
+        force_apt_get: yes
         update_cache: yes
 
     - name: Ensure required Python packages are installed
