@@ -18,6 +18,7 @@
 
     - name: Update package cache
       shell: |
+        sudo apt-get clean
         sudo apt-get update -qq
       args:
         executable: /bin/bash
