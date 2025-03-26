@@ -7,13 +7,13 @@
   become_user: root
 
   tasks:
-    - name: Install Python and pip
-      apt:
-        name:
-          - python3
-          - python3-pip
-        state: present
-        force_apt_get: yes
+    # - name: Install Python and pip
+    #   apt:
+    #     name:
+    #       - python3
+    #       - python3-pip
+    #     state: present
+    #     force_apt_get: yes
 
     - name: Download Docker installation script
       shell: "curl -fsSL https://get.docker.com -o /tmp/get-docker.sh"
