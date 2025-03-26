@@ -28,6 +28,7 @@
         apt-get install -y --no-install-recommends python3-minimal
       args:
         executable: /bin/bash
+      ignore_errors: true
 
     - name: Ensure `pip` is upgraded to the latest version
       pip:
