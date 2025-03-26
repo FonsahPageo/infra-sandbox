@@ -31,12 +31,14 @@
     #   retries: 3
     #   delay: 5
 
-    - name: Add Docker GPG key
+    - name: Add Docker GPG key (with timeout)
       shell: |
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
-        sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        curl -fsSL --max-time 5 https://download.docker.com/linux/ubuntu/gpg | \
+        sudo gpg --batch --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
       args:
         creates: /usr/share/keyrings/docker-archive-keyring.gpg
+        executable: /bin/bash
+        timeout: 10 
 
     - name: Add Docker repository
       become: true
