@@ -15,15 +15,32 @@
         owner: root
         group: root
 
+    - name: Install prerequisite packages
+      apt:
+        name:
+          - curl
+          - ca-certificates
+          - gnupg
+          - software-properties-common
+        state: present
+
     - name: Download Docker installation script
       shell: "curl -fsSL https://get.docker.com -o /tmp/get-docker.sh"
 
+    # - name: Run Docker installation script
+    #   shell: "sh /tmp/get-docker.sh"
+
     - name: Run Docker installation script
-      shell: "sh /tmp/get-docker.sh"
+      command: /bin/sh /tmp/get-docker.sh
+      register: docker_install
+      retries: 3
+      delay: 10
+      until: docker_install.rc == 0
+      ignore_errors: true
 
     - name: Add current user to Docker group
       user:
-        name: "{{ lookup('env', 'USER') }}"  # Fetch user from the environment
+        name: "{{ lookup('env', 'USER') }}"
         groups: docker
         append: yes
 
@@ -31,13 +48,23 @@
       apt:
         update_cache: yes
 
-    - name: Install Docker
-      apt:
-        name:
-          - docker.io
-          - containerd
-        state: present
-        update_cache: no 
+    # - name: Add Docker GPG key
+    #   apt_key:
+    #     url: https://download.docker.com/linux/ubuntu/gpg
+    #     state: present
+    #
+    # - name: Add Docker repository
+    #   apt_repository:
+    #     repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable
+    #     state: present
+
+    # - name: Install Docker
+    #   apt:
+    #     name:
+    #       - docker.io
+    #       - containerd
+    #     state: present
+    #     update_cache: no 
 
     - name: Kubectl Download
       shell: |
