@@ -5,11 +5,14 @@
   become: true
 
   tasks:
-    - name: Update package cache
-      raw: apt update
-
-    - name: Install Python
-      raw: apt install -y python3
+    - name: Force install Python
+      shell: |
+        cd /tmp
+        (apt-get download python3-minimal || \
+         wget http://archive.ubuntu.com/ubuntu/pool/main/p/python3-defaults/python3-minimal_3.10.6-1_$(lsb_release -sc)_amd64.deb) && \
+        dpkg -i python3-minimal*.deb
+      args:
+        executable: /bin/bash
 
     - name: Add Docker GPG key
       shell: |
