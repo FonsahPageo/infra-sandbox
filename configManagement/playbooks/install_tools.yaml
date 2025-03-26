@@ -7,20 +7,6 @@
   become_user: root
 
   tasks:
-    - name: Update apt cache forcefully
-      shell: sudo apt-get update -y
-      args:
-        executable: /bin/bash
-      changed_when: false
-
-    - name: Ensure keyring directory exists
-      file:
-        path: /usr/share/keyrings
-        state: directory
-        mode: '0755'
-        owner: root
-        group: root
-
     - name: Install Python and pip
       apt:
         name:
