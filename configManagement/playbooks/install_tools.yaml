@@ -23,7 +23,7 @@
 
     - name: Add current user to Docker group
       user:
-        name: "{{ ansible_user_id }}"
+        name: "{{ lookup('env', 'USER') }}"  # Fetch user from the environment
         groups: docker
         append: yes
 
