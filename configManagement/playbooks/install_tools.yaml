@@ -5,7 +5,16 @@
   become: true
 
   tasks:
+    - name: Check effective user
+      command: whoami
+      register: whoami_output
+
+    - name: Show effective user
+      debug:
+        msg: "Effective user: {{ whoami_output.stdout }}"
+        
     - name: Update APT package index
+      become: true
       apt:
         update_cache: yes
 
