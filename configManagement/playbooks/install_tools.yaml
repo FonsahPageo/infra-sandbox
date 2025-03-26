@@ -7,39 +7,11 @@
   become_user: root
 
   tasks:
-    - name: Kill any running apt processes
-      shell: |
-        sudo killall -9 apt-get || true
-        sudo killall -9 dpkg || true
-        sudo killall -9 apt || true
-      args:
-        executable: /bin/bash
-      changed_when: false
-      failed_when: false
-
-    - name: Remove apt locks
-      file:
-        path: "{{ item }}"
-        state: absent
-      loop:
-        - /var/lib/dpkg/lock
-        - /var/lib/dpkg/lock-frontend
-        - /var/cache/apt/archives/lock
-      become: true
-
-    - name: Reconfigure dpkg if needed
-      shell: sudo dpkg --configure -a
-      args:
-        executable: /bin/bash
-      changed_when: false
-      failed_when: false
-
     - name: Update apt cache forcefully
       shell: sudo apt-get update -y
       args:
         executable: /bin/bash
       changed_when: false
-
 
     - name: Ensure keyring directory exists
       file:
