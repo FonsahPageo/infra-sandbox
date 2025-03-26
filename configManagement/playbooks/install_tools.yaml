@@ -3,18 +3,38 @@
   hosts: testing
   gather_facts: false
   become: true
+  become_method: sudo
+  become_user: root
 
   tasks:
-    - name: Install Python via dpkg
-      shell: |
-        apt-get install -y --no-install-recommends python3-minimal
-      args:
-        executable: /bin/bash
-      ignore_errors: true
+    - name: Ensure keyring directory exists
+      file:
+        path: /usr/share/keyrings
+        state: directory
+        mode: '0755'
+        owner: root
+        group: root
+        
+    # - name: Install Python via dpkg
+    #   shell: |
+    #     apt-get install -y --no-install-recommends python3-minimal
+    #   args:
+    #     executable: /bin/bash
+    #   ignore_errors: true
+
+    - name: Install Python minimal
+      apt:
+        name: python3-minimal
+        state: present
+        update_cache: yes
+      register: python_install
+      retries: 3
+      delay: 5
 
     - name: Add Docker GPG key
       shell: |
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+        sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
       args:
         creates: /usr/share/keyrings/docker-archive-keyring.gpg
 
