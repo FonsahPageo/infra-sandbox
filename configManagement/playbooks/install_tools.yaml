@@ -15,30 +15,26 @@
         owner: root
         group: root
 
-    # - name: Install Python via dpkg
-    #   shell: |
-    #     apt-get install -y --no-install-recommends python3-minimal
-    #   args:
-    #     executable: /bin/bash
-    #   ignore_errors: true
+    - name: Ensure Docker GPG key
+      block:
+      - name: Add key with builtin timeout
+        ansible.builtin.shell: |
+          curl -fsSL --max-time 5 https://download.docker.com/linux/ubuntu/gpg | \
+          sudo gpg --batch --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        args:
+          creates: /usr/share/keyrings/docker-archive-keyring.gpg
+        timeout: 10
+        ignore_errors: true
+        register: modern_method
 
-    # - name: Install Python minimal
-    #   apt:
-    #     name: python3-minimal
-    #     state: present
-    #     # update_cache: yes
-    #   register: python_install
-    #   retries: 3
-    #   delay: 5
-
-    - name: Add Docker GPG key (with timeout)
-      shell: |
-        curl -fsSL --max-time 5 https://download.docker.com/linux/ubuntu/gpg | \
-        sudo gpg --batch --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-      args:
-        creates: /usr/share/keyrings/docker-archive-keyring.gpg
-        executable: /bin/bash
-        timeout: 10 
+      - name: Add key with manual timeout
+        shell: |
+          timeout 10s bash -c '\
+            curl -fsSL --max-time 5 https://download.docker.com/linux/ubuntu/gpg | \
+            sudo gpg --batch --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg'
+        args:
+          creates: /usr/share/keyrings/docker-archive-keyring.gpg
+        when: modern_method is failed
 
     - name: Add Docker repository
       become: true
