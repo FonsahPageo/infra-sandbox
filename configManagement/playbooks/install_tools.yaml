@@ -18,16 +18,33 @@
     - name: Download Docker installation script
       shell: "curl -fsSL https://get.docker.com -o /tmp/get-docker.sh"
 
-    # - name: Run Docker installation script
-    #   shell: "sh /tmp/get-docker.sh"
+    - name: Verify Docker installation script exists
+      stat:
+        path: /tmp/get-docker.sh
+      register: docker_script
 
-    - name: Run Docker installation script
-      command: /bin/sh /tmp/get-docker.sh
-      register: docker_install
-      retries: 3
-      delay: 10
-      until: docker_install.rc == 0
-      ignore_errors: true
+    - name: Run Docker installation script with verbose output and timeout
+      block:
+        - name: Execute Docker installation script
+          shell: >
+            bash /tmp/get-docker.sh
+          args:
+            executable: /bin/bash
+          register: docker_install
+          timeout: 60
+          changed_when: docker_install.rc == 0
+
+    - name: Debug Docker installation if failed
+      block:
+        - name: Display Docker installation output
+          debug:
+            var: docker_install
+          when: docker_install.rc != 0
+
+        - name: Fail if Docker installation unsuccessful
+          fail:
+            msg: "Docker installation failed with return code {{ docker_install.rc }}"
+          when: docker_install.rc != 0
 
     - name: Add current user to Docker group
       user:
