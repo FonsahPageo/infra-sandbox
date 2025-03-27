@@ -34,7 +34,7 @@
       apt:
         update_cache: yes
 
-    - name: Install Python 3.12
+    - name: Install Python
       apt:
         name:
           - python3.12
@@ -42,15 +42,8 @@
           - python3.12-dev
         state: present
 
-    - name: Ensure pip is installed 
-      shell: python3.12 -m ensurepip --upgrade
-      args:
-        creates: /usr/local/bin/pip3.12
-      register: ensurepip_out
-      changed_when: "'Looking in' in ensurepip_out.stdout or ensurepip_out.changed"
-
-    - name: Upgrade pip to version 25.0.1
-      shell: python3.12 -m pip install --upgrade pip==25.0.1
+    - name: Install Pip
+      shell: python3.12 -m pip install pip==24.0
       register: pip_upgrade_out
 
     # - name: Download Docker installation script
