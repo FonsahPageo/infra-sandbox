@@ -83,7 +83,7 @@
         chmod +x /usr/local/bin/docker-compose
 
     - name: Verify installations
-      shell: "docker --version && kubectl version --client && kustomize version && docker-compose --version && java --version && python3 --version"
+      shell: "docker --version && kustomize version && docker-compose --version && python3 --version"
       register: verification_output
 
     - name: Display verification output
