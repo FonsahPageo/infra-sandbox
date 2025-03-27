@@ -14,31 +14,34 @@
       debug:
         msg: "Effective user: {{ whoami_output.stdout }}"
 
-    - name: Download Python 3.13.2
-      get_url:
-        url: https://www.python.org/ftp/python/3.13.2/Python-3.13.2.tgz
-        dest: /tmp/Python-3.13.2.tgz
-        mode: 0755
+    - name: Add deadsnakes PPA for Python 3.12 (Ubuntu only)
+      apt_repository:
+        repo: ppa:deadsnakes/ppa
+        state: present
+      when: ansible_distribution == "Ubuntu"
 
-    - name: Extract Python source
-      unarchive:
-        src: /tmp/Python-3.13.2.tgz
-        dest: /tmp/
-        remote_src: yes
+    - name: Update apt package index
+      apt:
+        update_cache: yes
 
-    - name: Compile and install Python
-      command:
-        cmd: |
-          ./configure --enable-optimizations &&
-          make -j $(nproc) &&
-          make altinstall
-        chdir: /tmp/Python-3.13.2
+    - name: Install Python 3.12 and required packages
+      apt:
+        name:
+          - python3.12
+          - python3.12-venv
+          - python3.12-dev
+        state: present
 
-    - name: Install specific pip version
-      pip:
-        name: pip
-        version: 25.0.1
-        executable: /usr/local/bin/python3.13
+    - name: Ensure pip is installed using ensurepip (if not already installed)
+      shell: python3.12 -m ensurepip --upgrade
+      args:
+        creates: /usr/local/bin/pip3.12
+      register: ensurepip_out
+      changed_when: "'Looking in' in ensurepip_out.stdout or ensurepip_out.changed"
+
+    - name: Upgrade pip to version 25.0.1
+      shell: python3.12 -m pip install --upgrade pip==25.0.1
+      register: pip_upgrade_out
 
     # - name: Download Docker installation script
     #   shell: "curl -fsSL https://get.docker.com -o /tmp/get-docker.sh"
