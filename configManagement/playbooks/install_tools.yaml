@@ -7,6 +7,14 @@
   become_user: root
 
   tasks:
+    - name: Check effective user
+      command: whoami
+      register: whoami_output
+
+    - name: Show effective user
+      debug:
+        msg: "Effective user: {{ whoami_output.stdout }}"
+
     - name: Install Python and pip
       package:
         name: python3-pip
