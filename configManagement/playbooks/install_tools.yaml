@@ -15,11 +15,14 @@
       debug:
         msg: "Effective user: {{ whoami_output.stdout }}"
 
-    - name: Install Python and pip
+    - name: Install Python 3.13.2
       package:
-        name:
-          - python3.13.2
-          - python3-pip25.01
+        name: python3=3.13.2
+        state: present
+
+    - name: Install pip 25.01
+      package:
+        name: python3-pip=25.01
         state: present
 
     # - name: Download Docker installation script
