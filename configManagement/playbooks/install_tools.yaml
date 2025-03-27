@@ -2,9 +2,9 @@
 - name: Software Installation Playbook
   hosts: testing
   gather_facts: false
-  become: true
-  become_method: sudo
-  become_user: root
+  # become: true
+  # become_method: sudo
+  # become_user: root
 
   tasks:
     - name: Check effective user
@@ -20,17 +20,17 @@
         name: python3-pip
         state: present
 
-    # - name: Download Docker installation script
-    #   shell: "curl -fsSL https://get.docker.com -o /tmp/get-docker.sh"
+    - name: Download Docker installation script
+      shell: "curl -fsSL https://get.docker.com -o /tmp/get-docker.sh"
 
-    # - name: Run Docker installation script
-    #   shell: |
-    #     chmod +x /tmp/get-docker.sh
-    #     /bin/bash /tmp/get-docker.sh
-    #   args:
-    #     executable: /bin/bash
-    #   register: docker_install_result
-    #   failed_when: docker_install_result.rc != 0
+    - name: Run Docker installation script
+      shell: |
+        chmod +x /tmp/get-docker.sh
+        /bin/bash /tmp/get-docker.sh
+      args:
+        executable: /bin/bash
+      register: docker_install_result
+      failed_when: docker_install_result.rc != 0
 
     # - name: Display Docker installation output if failed
     #   debug:
