@@ -2,7 +2,7 @@
 - name: Software Installation Playbook
   hosts: testing
   gather_facts: false
-  # become: true
+  become: true
   # become_method: sudo
   # become_user: root
 
