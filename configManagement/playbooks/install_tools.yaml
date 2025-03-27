@@ -14,7 +14,7 @@
       debug:
         msg: "Effective user: {{ whoami_output.stdout }}"
 
-    - name: Install Python 3.13.2
+    - name: Install Python 
       package:
         name: python3=3.13.2
         state: present
