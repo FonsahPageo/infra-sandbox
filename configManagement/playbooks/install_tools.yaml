@@ -15,12 +15,12 @@
         msg: "Effective user: {{ whoami_output.stdout }}"
 
     - name: Install Python 
-      package:
+      apt:
         name: python3=3.13.2
         state: present
 
     - name: Install pip 25.01
-      package:
+      apt:
         name: python3-pip=25.01
         state: present
 
