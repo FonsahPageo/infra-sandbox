@@ -58,46 +58,24 @@
       register: docker_install_result
       failed_when: docker_install_result.rc != 0
 
-    # - name: Add Docker GPG key
-    #   apt_key:
-    #     url: https://download.docker.com/linux/ubuntu/gpg
-    #     state: present
-    # #
-    # - name: Add Docker repository
-    #   apt_repository:
-    #     repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable
-    #     state: present
-
-    # - name: Install Docker
-    #   apt:
-    #     name:
-    #       - docker.io
-    #       - containerd
-    #     state: present
-    #     update_cache: no 
-
     - name: Add current user to Docker group
       user:
         name: "{{ ansible_user_id }}"
         groups: docker
         append: yes
 
-    # - name: Update apt package index
-    #   apt:
-    #     update_cache: yes
+    - name: Download Kustomize
+      shell: |
+        curl -L --retry 3 --output /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.3.0/kustomize_v5.3.0_linux_amd64.tar.gz
+      args:
+        creates: /tmp/kustomize.tar.gz
 
-    # - name: Download Kustomize
-    #   shell: |
-    #     curl -L --retry 3 --output /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.3.0/kustomize_v5.3.0_linux_amd64.tar.gz
-    #   args:
-    #     creates: /tmp/kustomize.tar.gz
-
-    # - name: Install Kustomize
-    #   unarchive:
-    #     src: /tmp/kustomize.tar.gz
-    #     dest: /usr/local/bin
-    #     remote_src: yes
-    #     mode: '0755'
+    - name: Install Kustomize
+      unarchive:
+        src: /tmp/kustomize.tar.gz
+        dest: /usr/local/bin
+        remote_src: yes
+        mode: '0755'
 
     # - name: Install Docker Compose
     #   shell: |
