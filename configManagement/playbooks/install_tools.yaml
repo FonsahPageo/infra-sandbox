@@ -34,7 +34,7 @@
       apt:
         update_cache: yes
 
-    - name: Install Python 3.12 and required packages
+    - name: Install Python 3.12
       apt:
         name:
           - python3.12
@@ -42,7 +42,7 @@
           - python3.12-dev
         state: present
 
-    - name: Ensure pip is installed using ensurepip (if not already installed)
+    - name: Ensure pip is installed 
       shell: python3.12 -m ensurepip --upgrade
       args:
         creates: /usr/local/bin/pip3.12
@@ -65,38 +65,38 @@
     #   register: docker_install_result
     #   failed_when: docker_install_result.rc != 0
 
-    - name: Add Docker GPG key
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
-    #
-    - name: Add Docker repository
-      apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable
-        state: present
+    # - name: Add Docker GPG key
+    #   apt_key:
+    #     url: https://download.docker.com/linux/ubuntu/gpg
+    #     state: present
+    # #
+    # - name: Add Docker repository
+    #   apt_repository:
+    #     repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable
+    #     state: present
 
-    - name: Install Docker
-      apt:
-        name:
-          - docker.io
-          - containerd
-        state: present
-        update_cache: no 
+    # - name: Install Docker
+    #   apt:
+    #     name:
+    #       - docker.io
+    #       - containerd
+    #     state: present
+    #     update_cache: no 
 
-    - name: Display Docker installation output if failed
-      debug:
-        var: docker_install_result
-      when: docker_install_result.rc != 0
+    # - name: Display Docker installation output if failed
+    #   debug:
+    #     var: docker_install_result
+    #   when: docker_install_result.rc != 0
 
-    - name: Add current user to Docker group
-      user:
-        name: "{{ lookup('env', 'USER') }}"
-        groups: docker
-        append: yes
+    # - name: Add current user to Docker group
+    #   user:
+    #     name: "{{ lookup('env', 'USER') }}"
+    #     groups: docker
+    #     append: yes
 
-    - name: Update apt package index
-      apt:
-        update_cache: yes
+    # - name: Update apt package index
+    #   apt:
+    #     update_cache: yes
 
     # - name: Download Kustomize
     #   shell: |
