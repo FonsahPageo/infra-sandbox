@@ -1,9 +1,10 @@
 ---
 - name: Software Installation Playbook
   hosts: testing
-  gather_facts: false
+  gather_facts: true
   become: true
   become_method: sudo
+  become_user: root
 
   tasks:
     - name: Check effective user
@@ -18,7 +19,7 @@
       apt_repository:
         repo: ppa:deadsnakes/ppa
         state: present
-      # when: ansible_distribution == "Ubuntu"
+      when: ansible_distribution == "Ubuntu"
 
     - name: Update apt package index
       apt:
