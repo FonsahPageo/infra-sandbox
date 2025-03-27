@@ -24,10 +24,10 @@
         state: present
         update_cache: yes
 
-    - name: Add deadsnakes PPA for Python 3.12 (Ubuntu only)
-      apt_repository:
-        repo: ppa:deadsnakes/ppa
-        state: present
+    - name: Add deadsnakes PPA for Python 3.12 
+      command: add-apt-repository -y ppa:deadsnakes/ppa
+      args:
+        executable: /bin/bash
       when: ansible_distribution == "Ubuntu"
 
     - name: Update apt package index
