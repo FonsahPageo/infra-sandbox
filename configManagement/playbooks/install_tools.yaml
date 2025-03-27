@@ -2,9 +2,8 @@
 - name: Software Installation Playbook
   hosts: testing
   gather_facts: false
-  # become: true
-  # become_method: sudo
-  # become_user: root
+  become: true
+  become_method: sudo
 
   tasks:
     - name: Check effective user
