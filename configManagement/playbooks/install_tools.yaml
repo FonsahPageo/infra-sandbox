@@ -3,8 +3,8 @@
   hosts: testing
   gather_facts: true
   become: true
-  become_method: sudo
-  become_user: root
+  # become_method: sudo
+  # become_user: root
 
   tasks:
     - name: Install required dependencies for PPA management
