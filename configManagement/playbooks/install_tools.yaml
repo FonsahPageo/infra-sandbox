@@ -2,9 +2,9 @@
 - name: Software Installation Playbook
   hosts: testing
   gather_facts: false
-  # become: true
-  # become_method: sudo
-  # become_user: root
+  become: true
+  become_method: sudo
+  become_user: root
 
   tasks:
     - name: Install required dependencies for PPA management
